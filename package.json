@@ -2,12 +2,18 @@
   "name": "adventofcode-js-2020",
   "version": "0.1.0",
   "description": "Solutions to Advent of Code 2020",
+  "author": "Jeryl Vaz",
   "main": "./src/main.js",
   "files": [
-    "/src/*.js",
+    "/src/*",
     "package-lock.json"
   ],
-  "dependencies": {
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
   },
-  "author": "Jeryl Vaz"
+  "scripts": {
+      "lint": "npx eslint src/**"
+  }
 }
