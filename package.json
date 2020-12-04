@@ -1,0 +1,13 @@
+{
+  "name": "adventofcode-js-2020",
+  "version": "0.1.0",
+  "description": "Solutions to Advent of Code 2020",
+  "main": "./src/main.js",
+  "files": [
+    "/src/*.js",
+    "package-lock.json"
+  ],
+  "dependencies": {
+  },
+  "author": "Jeryl Vaz"
+}
