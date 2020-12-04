@@ -1,5 +1,6 @@
+const name = 'Passport Processing';
 
-function filterValidFields(lines) {
+function filterValidFields (lines) {
     const reqFields = [
         'byr',
         'iyr',
@@ -7,7 +8,7 @@ function filterValidFields(lines) {
         'hgt',
         'hcl',
         'ecl',
-        'pid',
+        'pid'
     ];
 
     return lines.join('\n').split('\n\n')
@@ -18,11 +19,11 @@ function filterValidFields(lines) {
         });
 }
 
-function part1(lines) {
+function part1 (lines) {
     return filterValidFields(lines).length;
 }
 
-function part2(lines) {
+function part2 (lines) {
     return filterValidFields(lines)
         .filter((passport) => {
             const fieldsPairs = passport.split(/\s/);
@@ -30,21 +31,24 @@ function part2(lines) {
             fieldsPairs.forEach((fp) => {
                 const [f, v] = fp.split(':');
                 switch (f) {
-                    case 'byr': isValid &= Number(v) >= 1920 && Number(v) <= 2002; break;
-                    case 'iyr': isValid &= Number(v) >= 2010 && Number(v) <= 2020; break;
-                    case 'eyr': isValid &= Number(v) >= 2020 && Number(v) <= 2030; break;
-                    case 'hgt': {
-                        const unit = v.slice(v.length - 2);
-                        const val = Number(v.substr(0, v.length - 2));
-                        isValid &= ['in', 'cm'].includes(unit);
+                case 'byr': isValid = isValid && Number(v) >= 1920 && Number(v) <= 2002; break;
+                case 'iyr': isValid = isValid && Number(v) >= 2010 && Number(v) <= 2020; break;
+                case 'eyr': isValid = isValid && Number(v) >= 2020 && Number(v) <= 2030; break;
+                case 'hgt': {
+                    const unit = v.slice(v.length - 2);
+                    const val = Number(v.substr(0, v.length - 2));
+                    isValid = isValid && ['in', 'cm'].includes(unit);
 
-                        if (unit === 'in') isValid &= val >= 59 && val <= 76;
-                        if (unit === 'cm') isValid &= val >= 150 && val <= 193;
-                        break;
-                    }
-                    case 'hcl': isValid &= (v.match(/^#[0-9a-f]{6}$/) !== null); break;
-                    case 'ecl': isValid &= ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'].includes(v); break;
-                    case 'pid': isValid &= (v.match(/^[0-9]{9}$/) !== null); break;
+                    if (unit === 'in') isValid = isValid && val >= 59 && val <= 76;
+                    if (unit === 'cm') isValid = isValid && val >= 150 && val <= 193;
+                    break;
+                }
+                case 'hcl': isValid = isValid && (v.match(/^#[0-9a-f]{6}$/) !== null); break;
+                case 'ecl': isValid = isValid
+                                && ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'].includes(v);
+                    break;
+                case 'pid': isValid = isValid && (v.match(/^[0-9]{9}$/) !== null); break;
+                default: // Do nothing
                 }
             });
             return isValid;
@@ -52,4 +56,4 @@ function part2(lines) {
         .length;
 }
 
-module.exports = { part1, part2 };
+module.exports = { name, part1, part2 };
