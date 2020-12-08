@@ -5,7 +5,7 @@ function run (instructions) {
     let acc = 0;
     for (let i = 0; i < instructionsCopy.length; ++i) {
         const [inst, val] = instructionsCopy[i].split(' ');
-        const iCopy = i;
+        instructionsCopy[i] = '-';
         switch (inst) {
         case 'acc': acc += Number(val); break;
         case 'jmp': i += Number(val) - 1; break;
@@ -13,7 +13,6 @@ function run (instructions) {
         case 'nop':
         default: break;
         }
-        instructionsCopy[iCopy] = '-';
     }
     return { acc, infiniteLoop: false };
 }

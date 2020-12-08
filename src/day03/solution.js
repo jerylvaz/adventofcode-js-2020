@@ -1,19 +1,9 @@
 const name = 'Toboggan Trajectory';
 
-function rotate (str, count) {
-    const optimizedCount = count % str.length;
-    const arr = str.split('');
-    for (let i = 0; i < optimizedCount; ++i) {
-        arr.push(arr.shift());
-    }
-    return arr.join('');
-}
-
 function pass (lines, right, down) {
     return lines
         .filter((_, idx) => (idx % down) === 0)
-        .map((line, idx) => rotate(line, idx * right))
-        .filter((line) => line[0] === '#')
+        .filter((line, idx) => line[(idx * right) % line.length] === '#')
         .length;
 }
 
