@@ -1,20 +1,18 @@
 const name = 'Encoding Error';
 
-const preambleLen = 25;
-
 function combinations (arr) {
     return arr.flatMap((val, idx) => arr.slice(idx + 1).map((x) => [val, x]));
 }
 
-function part1 (lines) {
+function part1 (lines, preambleLen = 25) {
     return lines.map(Number)
         .find((n, idx, arr) => idx >= preambleLen
             && !combinations(arr.slice(idx - preambleLen, idx)).some(([x, y]) => x + y === n))
         || -1;
 }
 
-function part2 (lines) {
-    const invalidNumber = part1(lines);
+function part2 (lines, preambleLen = 25) {
+    const invalidNumber = part1(lines, preambleLen);
     const nums = lines.map(Number);
     for (let i = 0; i < nums.length - 2; ++i) {
         for (let j = i + 2; j <= nums.length; ++j) {
