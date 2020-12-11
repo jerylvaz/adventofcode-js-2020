@@ -11,17 +11,17 @@ function findAllNeighbors (arr, width, idx) {
     const maxRows = arr.length / width;
 
     return [
-        Array(width - col - 1).fill().map((e, i) => row * width + col + i + 1),
-        Array(col).fill().map((e, i) => row * width + i).reverse(),
-        Array(row).fill().map((e, i) => i * width + col).reverse(),
-        Array(maxRows - row - 1).fill().map((e, i) => (i + row + 1) * width + col),
-        Array(Math.min(row, (width - col - 1))).fill()
+        /* E  */ Array(width - col - 1).fill().map((e, i) => row * width + col + i + 1),
+        /* W  */ Array(col).fill().map((e, i) => row * width + i).reverse(),
+        /* N  */ Array(row).fill().map((e, i) => i * width + col).reverse(),
+        /* S  */ Array(maxRows - row - 1).fill().map((e, i) => (i + row + 1) * width + col),
+        /* NE */ Array(Math.min(row, (width - col - 1))).fill()
             .map((e, i) => (row - i - 1) * width + col + i + 1),
-        Array(Math.min(maxRows - row - 1, (width - col - 1))).fill()
+        /* SE */ Array(Math.min(maxRows - row - 1, (width - col - 1))).fill()
             .map((e, i) => (row + i + 1) * width + col + i + 1),
-        Array(Math.min(maxRows - row - 1, col)).fill()
+        /* SW */ Array(Math.min(maxRows - row - 1, col)).fill()
             .map((e, i) => (row + i + 1) * width + col - i - 1),
-        Array(Math.min(row, col)).fill().map((e, i) => (row - i - 1) * width + col - i - 1)
+        /* NW */ Array(Math.min(row, col)).fill().map((e, i) => (row - i - 1) * width + col - i - 1)
     ]
         .map((dirArray) => dirArray.map((i) => arr[i]));
 }
@@ -47,13 +47,12 @@ function findNrVisibleNeighbors (arr, width, idx) {
 
 function pass (arr, width, findFunc, tolerance) {
     return arr.map((e, idx) => {
-        if (e === 'L') {
-            return findFunc(arr, width, idx) === 0 ? '#' : 'L';
+        if (e === '.') {
+            return e;
         }
-        if (e === '#') {
-            return findFunc(arr, width, idx) >= tolerance ? 'L' : '#';
-        }
-        return e;
+        const nrNeighbors = findFunc(arr, width, idx);
+        if (e === 'L') return nrNeighbors === 0 ? '#' : 'L';
+        return nrNeighbors >= tolerance ? 'L' : '#';
     });
 }
 
@@ -61,28 +60,24 @@ function areEqual (arr1, arr2) {
     return arr1.every((e, idx) => e === arr2[idx]);
 }
 
-function part1 (lines) {
+function run (lines, findFunc, tolerance) {
     const width = lines[0].length;
     let arr = lines.join('').split('');
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const newArr = pass(arr, width, findNrImmediateNeighbors, 4);
+        const newArr = pass(arr, width, findFunc, tolerance);
         if (areEqual(arr, newArr)) break;
         arr = newArr;
     }
     return arr.filter(eq('#')).length;
 }
 
+function part1 (lines) {
+    return run(lines, findNrImmediateNeighbors, 4);
+}
+
 function part2 (lines) {
-    const width = lines[0].length;
-    let arr = lines.join('').split('');
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-        const newArr = pass(arr, width, findNrVisibleNeighbors, 5);
-        if (areEqual(arr, newArr)) break;
-        arr = newArr;
-    }
-    return arr.filter(eq('#')).length;
+    return run(lines, findNrVisibleNeighbors, 5);
 }
 
 module.exports = { name, part1, part2 };
