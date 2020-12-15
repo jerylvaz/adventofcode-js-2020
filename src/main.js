@@ -4,9 +4,11 @@ const Runner = require('./Runner');
 
 /* eslint-disable no-console */
 
+const daysToRun = process.argv.slice(2).map(Number).filter((x) => !Number.isNaN(x));
+
 const runner = new Runner();
 
-const heading = `${'DAY'.padStart(4)} | ${'NAME'.padEnd(24)} | ${'PART 1'.padStart(16)} | ${'PART 2'.padStart(16)} | ${'TIME (ms)'.padStart(10)}`;
+const heading = `${'DAY'.padStart(4)} | ${'NAME'.padEnd(24)} | ${'PART 1'.padStart(16)} | ${'PART 2'.padStart(16)} | ${'TIME'.padStart(10)}`;
 console.log(heading);
 console.log('-'.repeat(heading.length));
 
@@ -16,7 +18,7 @@ runner.on('solution', (day, name, result1, result2, time) => {
     results.push(resultStr);
 });
 
-runner.run()
+runner.run(daysToRun)
     .then(() => {
         console.log(results.sort().join('\n'));
     })

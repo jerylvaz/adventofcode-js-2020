@@ -14,7 +14,7 @@ class Runner extends events.EventEmitter {
                 const dayDirs = entries.filter((e) => e.startsWith('day')).sort();
                 const promises = dayDirs
                     .map((dayDir) => [dayDir, Number(dayDir.substr(dayDir.length - 2))])
-                    .filter(([, day]) => !daysToRun || daysToRun.includes(day))
+                    .filter(([, day]) => !daysToRun || !daysToRun.length || daysToRun.includes(day))
                     .map(([dayDir, day]) => {
                         // eslint-disable-next-line import/no-dynamic-require, global-require
                         const solve = require(path.join(__dirname, dayDir, 'solution'));
@@ -23,11 +23,24 @@ class Runner extends events.EventEmitter {
                                 const startTime = process.hrtime();
                                 const result1 = solve.part1(data);
                                 const result2 = solve.part2(data);
-                                const [, nanosecs] = process.hrtime(startTime);
+                                const [secs, nanosecs] = process.hrtime(startTime);
 
-                                this.emit('solution',
-                                    // eslint-disable-next-line no-bitwise
-                                    day, solve.name, result1, result2, ~~(nanosecs / 1000000));
+                                let timeStr = '';
+                                if (!secs) {
+                                    if (nanosecs < 1000000) {
+                                        timeStr = `${Math.floor(nanosecs / 1000)}us`;
+                                    } else {
+                                        timeStr = `${Math.floor(nanosecs / 1000000)}ms`;
+                                    }
+                                } else if (secs < 60) {
+                                    timeStr = `${secs}ms`;
+                                } else if (secs < 5 * 60) {
+                                    timeStr = `${Math.floor(secs / 60)}min ${secs % 60}s`;
+                                } else {
+                                    timeStr = `${Math.floor(secs / 60)}min`;
+                                }
+
+                                this.emit('solution', day, solve.name, result1, result2, timeStr);
                             });
                     });
                 return Promise.all(promises);
