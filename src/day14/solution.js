@@ -16,41 +16,38 @@ function prepareInput (lines) {
 }
 
 function part1 (lines) {
-    const obj = {};
+    const memObj = {};
     prepareInput(lines)
         .forEach(([mask, instructions]) => {
             instructions
                 .forEach(([addStr, valStr]) => {
-                    obj[Number(addStr)] = parseInt(
-                        Number(valStr)
-                            .toString(2)
-                            .padStart(mask.length, '0')
-                            .split('')
-                            .map((c, i) => (mask[i] === 'X' ? c : mask[i]))
-                            .join(''),
-                        2
-                    );
+                    const binStr = Number(valStr)
+                        .toString(2)
+                        .padStart(mask.length, '0')
+                        .split('')
+                        .map((c, i) => (mask[i] === 'X' ? c : mask[i]))
+                        .join('');
+                    memObj[Number(addStr)] = parseInt(binStr, 2);
                 });
         });
 
-    return Object.values(obj).reduce((acc, v) => acc + v, 0);
+    return Object.values(memObj).reduce((acc, v) => acc + v, 0);
 }
 
 function part2 (lines) {
-    const obj = {};
+    const memObj = {};
 
-    const recurse = (addrArr, addresses) => {
+    const recurse = (addrArr, val) => {
         const i = addrArr.indexOf('X');
         if (i === -1) {
-            addresses.push(parseInt(addrArr.join(''), 2));
-            return addresses;
+            memObj[parseInt(addrArr.join(''), 2)] = val;
+            return;
         }
         const arrCopy = addrArr.slice();
         arrCopy[i] = '0';
-        recurse(arrCopy, addresses);
+        recurse(arrCopy, val);
         arrCopy[i] = '1';
-        recurse(arrCopy, addresses);
-        return addresses;
+        recurse(arrCopy, val);
     };
 
     prepareInput(lines)
@@ -63,13 +60,10 @@ function part2 (lines) {
                         .split('')
                         .map((c, i) => (mask[i] === '0' ? c : mask[i]));
 
-                    const addresses = recurse(addrArr, []);
-                    addresses.forEach((a) => {
-                        obj[a] = Number(valStr);
-                    });
+                    recurse(addrArr, Number(valStr));
                 });
         });
-    return Object.values(obj).reduce((acc, v) => acc + v, 0);
+    return Object.values(memObj).reduce((acc, v) => acc + v, 0);
 }
 
 module.exports = { name, part1, part2 };
