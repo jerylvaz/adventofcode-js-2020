@@ -33,7 +33,7 @@ class Runner extends events.EventEmitter {
                                         timeStr = `${Math.floor(nanosecs / 1000000)}ms`;
                                     }
                                 } else if (secs < 60) {
-                                    timeStr = `${secs}ms`;
+                                    timeStr = `${secs}s`;
                                 } else if (secs < 5 * 60) {
                                     timeStr = `${Math.floor(secs / 60)}min ${secs % 60}s`;
                                 } else {

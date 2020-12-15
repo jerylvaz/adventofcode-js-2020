@@ -53,12 +53,12 @@ function run () {
                                     ))
                             ];
                         })
-                        .reduce((acc, val) => acc && val, true);
+                        .every(Boolean);
                 });
         })
         .then((results) => {
             /* eslint-disable no-console */
-            const finalResult = results.reduce((acc, val) => acc && val, true);
+            const finalResult = results.every(Boolean);
             console.log(finalResult ? '\x1b[32m%s\x1b[0m' : '\x1b[31m%s\x1b[0m',
                 `${results.filter(Boolean).length} / ${results.length} TESTS PASSED!`);
             return finalResult;

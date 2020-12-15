@@ -1,17 +1,17 @@
 const name = 'Rambunctious Recitation';
 
 function solve (initSeq, n) {
-    const numMap = {};
+    const numMap = new Map();
 
     let lastNum = initSeq.pop();
     initSeq.forEach((s, idx) => {
-        numMap[s] = idx + 1;
+        numMap.set(s, idx + 1);
     });
 
     for (let pos = initSeq.length + 1; pos < n; ++pos) {
-        const lastPos = numMap[lastNum];
+        const lastPos = numMap.get(lastNum);
         const newNum = (lastPos === undefined) ? 0 : (pos - lastPos);
-        numMap[lastNum] = pos;
+        numMap.set(lastNum, pos);
         lastNum = newNum;
     }
 

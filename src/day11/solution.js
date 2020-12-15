@@ -4,37 +4,37 @@ function eq (v) {
     return (x) => x === v;
 }
 
-function findAllNeighbors (arr, width, idx) {
-    // eslint-disable-next-line no-bitwise
-    const row = ~~(idx / width);
+function findAllNeighbors (arr, width, idx, depth) {
+    const row = Math.floor(idx / width);
     const col = idx % width;
-    const maxRows = arr.length / width;
+    const height = arr.length / width;
+    const dpt = depth || Math.max(width, height);
 
     return [
-        /* E  */ Array(width - col - 1).fill().map((e, i) => row * width + col + i + 1),
-        /* W  */ Array(col).fill().map((e, i) => row * width + i).reverse(),
-        /* N  */ Array(row).fill().map((e, i) => i * width + col).reverse(),
-        /* S  */ Array(maxRows - row - 1).fill().map((e, i) => (i + row + 1) * width + col),
-        /* NE */ Array(Math.min(row, (width - col - 1))).fill()
-            .map((e, i) => (row - i - 1) * width + col + i + 1),
-        /* SE */ Array(Math.min(maxRows - row - 1, (width - col - 1))).fill()
-            .map((e, i) => (row + i + 1) * width + col + i + 1),
-        /* SW */ Array(Math.min(maxRows - row - 1, col)).fill()
-            .map((e, i) => (row + i + 1) * width + col - i - 1),
-        /* NW */ Array(Math.min(row, col)).fill().map((e, i) => (row - i - 1) * width + col - i - 1)
+        /* E  */ Array(Math.min(dpt, width - col - 1)).fill().map((e, i) => idx + i + 1),
+        /* W  */ Array(Math.min(dpt, col)).fill().map((e, i) => idx - i - 1),
+        /* N  */ Array(Math.min(dpt, row)).fill().map((e, i) => idx - (i + 1) * width),
+        /* S  */ Array(Math.min(dpt, height - row - 1)).fill().map((e, i) => idx + (i + 1) * width),
+        /* NE */ Array(Math.min(dpt, row, (width - col - 1))).fill()
+            .map((e, i) => idx - (i + 1) * (width - 1)),
+        /* SE */ Array(Math.min(dpt, height - row - 1, (width - col - 1))).fill()
+            .map((e, i) => idx + (i + 1) * (width + 1)),
+        /* SW */ Array(Math.min(dpt, height - row - 1, col)).fill()
+            .map((e, i) => idx + (i + 1) * (width - 1)),
+        /* NW */ Array(Math.min(dpt, row, col)).fill().map((e, i) => idx - (i + 1) * (width + 1))
     ]
         .map((dirArray) => dirArray.map((i) => arr[i]));
 }
 
 function findNrImmediateNeighbors (arr, width, idx) {
-    return findAllNeighbors(arr, width, idx)
+    return findAllNeighbors(arr, width, idx, 1)
         .map((dirArray) => dirArray.shift())
         .filter(eq('#'))
         .length;
 }
 
 function findNrVisibleNeighbors (arr, width, idx) {
-    return findAllNeighbors(arr, width, idx)
+    return findAllNeighbors(arr, width, idx, 0)
         // append to let indexOf always return a +ve index
         // eslint-disable-next-line no-sequences
         .map((dirArray) => (dirArray.push('L'), dirArray))
