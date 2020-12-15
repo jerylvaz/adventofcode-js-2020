@@ -30,6 +30,11 @@ function run () {
                     // eslint-disable-next-line import/no-dynamic-require, global-require
                     const testData = require(path.join(__dirname, dayStr));
 
+                    if (solution.name.length === 0) {
+                        console.log(`Day ${dayIdx + 1} - Empty name`);
+                        return false;
+                    }
+
                     return [1, 2]
                         .flatMap((part) => {
                             if (testData.both) {
