@@ -35,29 +35,22 @@ function part2 (lines) {
 
     const nrRules = rules.length;
     const identifiedRules = []; // rule name and field tuples array
+    const fieldIndices = Array(ticket.length).fill().map((e, i) => i);
 
     while (identifiedRules.length < nrRules) {
-        // filter tickets based on current rule set
-        const fieldValues = Array(nrRules).fill().map(() => Array(0));
-        nearbyTickets
-            .filter((tk) => tk.every((n) => rules.some((rule) => isValid(rule, n), n)))
-            .forEach((tk) => tk.forEach((n, idx) => {
-                fieldValues[idx].push(n);
-            }));
+        // filter for current rule set
+        const filteredTickets = nearbyTickets
+            .filter((tk) => tk.every((n) => rules.some((rule) => isValid(rule, n), n)));
 
-        const identifiedFields = identifiedRules.map((r) => r[1]);
         rules
-            .slice(0) // copy so as to mutate rules inside forEach()
             .forEach((rule, idx) => {
-                const fieldIdxs = fieldValues
-                    .map((g, i) => [g, i])
-                    .filter(([g]) => g.every((n) => isValid(rule, n)))
-                    .map(([, i]) => i)
-                    .filter((i) => !identifiedFields.includes(i));
+                const fields = fieldIndices
+                    .filter((col) => filteredTickets.every((tk) => isValid(rule, tk[col])));
 
-                if (fieldIdxs.length === 1) {
-                    identifiedRules.push([rule[0], fieldIdxs[0]]);
-                    rules.splice(idx, 1);
+                if (fields.length === 1) {
+                    identifiedRules.push([rule[0], fields[0]]);
+                    rules.splice(idx, 1); // this also terminates rules.forEach()
+                    fieldIndices.splice(fieldIndices.indexOf(fields[0]), 1);
                 }
             });
     }
