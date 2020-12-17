@@ -11,9 +11,33 @@
         "ecmaVersion": 12
     },
     "rules": {
-        "comma-dangle": ["error", "never"],
-        "indent": ["error", 4],
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-        "space-before-function-paren": ["error", "always"]
+        "comma-dangle": [
+            "error",
+            "never"
+        ],
+        "indent": [
+            "error",
+            4
+        ],
+        "no-plusplus": [
+            "error",
+            {
+                "allowForLoopAfterthoughts": true
+            }
+        ],
+        "space-before-function-paren": [
+            "error",
+            "always"
+        ],
+        "no-unused-vars":
+        [
+            "error",
+            {
+                "vars": "all",
+                "args": "after-used",
+                "argsIgnorePattern": "^_",
+                "ignoreRestSiblings": false
+            }
+        ]
     }
 }
