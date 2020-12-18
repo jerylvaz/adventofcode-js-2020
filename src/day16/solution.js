@@ -32,30 +32,25 @@ function part1 (lines) {
 
 function part2 (lines) {
     const [rules, ticket, nearbyTickets] = prepareInput(lines);
+    const filteredTickets = nearbyTickets
+        .filter((tk) => tk.every((n) => rules.some((rule) => isValid(rule, n), n)));
 
-    const nrRules = rules.length;
-    const identifiedRules = []; // rule name and field tuples array
     const fieldIndices = Array(ticket.length).fill().map((e, i) => i);
 
-    while (identifiedRules.length < nrRules) {
-        // filter for current rule set
-        const filteredTickets = nearbyTickets
-            .filter((tk) => tk.every((n) => rules.some((rule) => isValid(rule, n), n)));
-
-        rules
-            .forEach((rule, idx) => {
-                const fields = fieldIndices
-                    .filter((col) => filteredTickets.every((tk) => isValid(rule, tk[col])));
-
-                if (fields.length === 1) {
-                    identifiedRules.push([rule[0], fields[0]]);
-                    rules.splice(idx, 1); // this also terminates rules.forEach()
-                    fieldIndices.splice(fieldIndices.indexOf(fields[0]), 1);
-                }
-            });
-    }
-
-    return identifiedRules
+    return rules
+        .map((rule) => [
+            rule[0],
+            fieldIndices.filter((col) => filteredTickets.every((tk) => isValid(rule, tk[col])))
+        ])
+        .sort(([, fields1], [, fields2]) => fields1.length - fields2.length)
+        .map(
+            function mapFunc ([rn, fields]) { // thisArg cannot be used with arrow function
+                const unusedFieldId = fields.find((i) => !this.includes(i));
+                this.push(unusedFieldId);
+                return [rn, unusedFieldId];
+            },
+            [] // empty array as thisArg, used as list of identified indices
+        )
         .filter(([rn]) => rn.startsWith('departure'))
         .map(([, field]) => ticket[field])
         .reduce((acc, v) => acc * v, 1);
