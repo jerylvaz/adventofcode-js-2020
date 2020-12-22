@@ -23,8 +23,10 @@ function run () {
         .then((entries) => {
             const days = entries.filter((e) => e.startsWith('day')).sort();
             return days
-                .map((_, dayIdx) => {
-                    const dayStr = `day${`${dayIdx + 1}`.padStart(2, '0')}`;
+                .map((day) => day.match(/day([0-9]+)\.js/)[1])
+                .map((day) => {
+                    const dayStr = `day${day}`;
+                    const dayIdx = Number(day);
                     // eslint-disable-next-line import/no-dynamic-require, global-require
                     const solution = require(path.join(__dirname, '..', 'src', dayStr, 'solution'));
                     // eslint-disable-next-line import/no-dynamic-require, global-require
